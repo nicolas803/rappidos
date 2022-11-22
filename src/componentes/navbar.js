@@ -11,11 +11,10 @@ const NavbarComponent = () => {
   return (
     <Navbar bg="primary" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="#">
+        <Navbar.Brand href="/">
           <img src={RappiDosImage} height={70} alt="Logo"/>
         </Navbar.Brand>
-        <Nav.Link href="#action2"><FontAwesomeIcon icon={faHeart} /></Nav.Link>
-        <Nav.Link href="#action2"><FontAwesomeIcon icon={faCartShopping} /></Nav.Link>
+        <Nav.Link href="/carrito"><FontAwesomeIcon icon={faCartShopping} /></Nav.Link>
       </Container>
     </Navbar>
   );

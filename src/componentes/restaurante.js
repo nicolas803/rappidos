@@ -1,10 +1,15 @@
+import React, { useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faStar, faRoute } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { type } from "@testing-library/user-event/dist/type";
 
 const RestauranteComponent = () => {
+  useEffect(() => {
+    sessionStorage.setItem("pedidos", JSON.stringify(JSON.stringify([])));
+  }, []);
   const restaurante = {
     nombre_fantasia_restaurante: "Mc Vergas",
     tipo_restaurante: "Vergas pa la gente",
@@ -14,18 +19,21 @@ const RestauranteComponent = () => {
   };
   const productoRestaurante = [
     {
+      id: "1",
       nombre_producto: "Pinga Fresca",
       descripcion_producto: "Una pinga fresca para compartir",
       precio_venta_producto: 9990,
       imagen_producto: "https://www.fillmurray.com/g/286/180",
     },
     {
+      id: "2",
       nombre_producto: "Pinga Caliente",
       descripcion_producto: "Una pinga caliente como le gusta a Dido",
       precio_venta_producto: 4990,
       imagen_producto: "https://www.fillmurray.com/286/180",
     },
     {
+      id: "3",
       nombre_producto: "Pinga Frita",
       descripcion_producto: "Pinga frita para la cochina de Nando8",
       precio_venta_producto: 990,
@@ -42,6 +50,27 @@ const RestauranteComponent = () => {
       .catch((e) => {
         console.error(e);
       });
+  };
+
+  const addCarrito = (id, precio) => {
+    let getSessionStoragePedidos = JSON.parse(
+      JSON.parse(sessionStorage.getItem("pedidos"))
+    );
+
+    console.log("ANTES: ", getSessionStoragePedidos);
+    
+    getSessionStoragePedidos.push({
+      id: id,
+      cantidad: 1,
+      precio: precio,
+    });
+
+    console.log("DESPUES: ", getSessionStoragePedidos);
+    
+    sessionStorage.setItem(
+      "pedidos",
+      JSON.stringify(JSON.stringify(getSessionStoragePedidos))
+    );
   };
 
   return (
@@ -79,20 +108,27 @@ const RestauranteComponent = () => {
         </Card.Body>
       </Card>
       <br />
-      <br />
+      <h1 className="datosDelRestaurante">Productos</h1>
       {productoRestaurante.map((producto) => {
         return (
           <>
+            <br />
             <Card>
               <Card.Img variant="top" src={producto.imagen_producto} />
               <Card.Body>
                 <Card.Title>{producto.nombre_producto}</Card.Title>
                 <Card.Text>{producto.descripcion_producto}</Card.Text>
                 <Card.Text>${producto.precio_venta_producto}</Card.Text>
-                <Button variant="primary" onClick={getGay}>Comprar</Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    addCarrito(producto.id, producto.precio_venta_producto);
+                  }}
+                >
+                  Agregar al carrito
+                </Button>
               </Card.Body>
             </Card>
-            <br />
           </>
         );
       })}
