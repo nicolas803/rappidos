@@ -1,48 +1,47 @@
+import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faStar, faRoute } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
+const restURL = "http://localhost:8000/api/restaurante/1/";
+const ProducURL = "http://localhost:8000/api/producto/?restaurante__id=1"
 const RestauranteComponent = () => {
-  const restaurante = {
-    nombre_fantasia_restaurante: "Mc Vergas",
-    tipo_restaurante: "Vergas pa la gente",
-    clasificacion_restaurante: 4.9,
-    direccion_restaurante: "Micasa",
-    imagen_restaurante: "https://www.fillmurray.com/g/360/200",
-  };
-  const productoRestaurante = [
-    {
-      nombre_producto: "Pinga Fresca",
-      descripcion_producto: "Una pinga fresca para compartir",
-      precio_venta_producto: 9990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-    {
-      nombre_producto: "Pinga Caliente",
-      descripcion_producto: "Una pinga caliente como le gusta a Dido",
-      precio_venta_producto: 4990,
-      imagen_producto: "https://www.fillmurray.com/286/180",
-    },
-    {
-      nombre_producto: "Pinga Frita",
-      descripcion_producto: "Pinga frita para la cochina de Nando8",
-      precio_venta_producto: 990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-  ];
+  const [restaurante, setRestaurante] = React.useState([]);
 
-  const getGay = () => {
+
+  React.useEffect(() => {
+
     axios
-      .get("https://swapi.dev/api/people/1")
+      .get(restURL)
       .then((response) => {
-        console.log(response);
+        console.log(response.data)
+        setRestaurante(response.data);
       })
       .catch((e) => {
         console.error(e);
       });
-  };
+  }, []);
+
+
+  const [productoRestaurante, setProducto] = React.useState([]);
+
+
+  React.useEffect(() => {
+
+    axios
+      .get(ProducURL)
+      .then((response) => {
+        console.log(response.data)
+        setProducto(response.data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, []);
+
+
 
   return (
     <>
@@ -89,7 +88,7 @@ const RestauranteComponent = () => {
                 <Card.Title>{producto.nombre_producto}</Card.Title>
                 <Card.Text>{producto.descripcion_producto}</Card.Text>
                 <Card.Text>${producto.precio_venta_producto}</Card.Text>
-                <Button variant="primary" onClick={getGay}>Comprar</Button>
+                <Button variant="primary">Comprar</Button>
               </Card.Body>
             </Card>
             <br />
