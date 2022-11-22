@@ -16,11 +16,11 @@ const RestauranteComponent = () => {
     axios
       .get(restURL)
       .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         setRestaurante(response.data);
       })
       .catch((e) => {
-        console.error(e);
+        // console.error(e);
       });
   }, []);
 
@@ -30,11 +30,11 @@ const RestauranteComponent = () => {
     axios
       .get(ProducURL)
       .then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         setProducto(response.data);
       })
       .catch((e) => {
-        console.error(e);
+        // console.error(e);
       });
   }, []);
 
@@ -45,7 +45,7 @@ const RestauranteComponent = () => {
       JSON.parse(sessionStorage.getItem("pedidos"))
     );
 
-    console.log("ANTES: ", getSessionStoragePedidos);
+    // console.log("ANTES: ", getSessionStoragePedidos);
 
     getSessionStoragePedidos.push({
       id: producto.id,
@@ -57,7 +57,7 @@ const RestauranteComponent = () => {
 
     });
 
-    console.log("DESPUES: ", getSessionStoragePedidos);
+    // console.log("DESPUES: ", getSessionStoragePedidos);
 
     sessionStorage.setItem(
       "pedidos",
@@ -67,63 +67,65 @@ const RestauranteComponent = () => {
 
   return (
     <>
-      <div>
-        <img src={restaurante.imagen_restaurante} />
+      <div style={{ position: "absolute", top: "70px" }}>
+        <div >
+          <img src={restaurante.imagen_restaurante} style={{ width: "100%" }} />
+        </div>
+        <Card>
+          <Card.Body>
+            <div>
+              <br />
+              <Card.Title>{restaurante.nombre_fantasia_restaurante}</Card.Title>
+              <br />
+              <Card.Text>{restaurante.tipo_restaurante}</Card.Text>
+              <br />
+            </div>
+            <div className="datosDelRestaurante">
+              <div>
+                <FontAwesomeIcon icon={faClock} />
+                <label className="marginLeft8">30Min</label>
+              </div>
+              <div>
+                <FontAwesomeIcon icon={faStar} />
+                <label className="marginLeft8">
+                  {restaurante.clasificacion_restaurante}
+                </label>
+              </div>
+              <div>
+                <FontAwesomeIcon icon={faRoute} />
+                <label className="marginLeft8">
+                  {restaurante.direccion_restaurante}
+                </label>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+        <br />
+        <h1 className="datosDelRestaurante">Productos</h1>
+        {productoRestaurante.map((producto) => {
+          return (
+            <>
+              <br />
+              <Card>
+                <Card.Img variant="top" src={producto.imagen_producto} />
+                <Card.Body>
+                  <Card.Title>{producto.nombre_producto}</Card.Title>
+                  <Card.Text>{producto.descripcion_producto}</Card.Text>
+                  <Card.Text>${producto.precio_venta_producto}</Card.Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      addCarrito(producto);
+                    }}
+                  >
+                    Agregar al carrito
+                  </Button>
+                </Card.Body>
+              </Card>
+            </>
+          );
+        })}
       </div>
-      <Card>
-        <Card.Body>
-          <div>
-            <br />
-            <Card.Title>{restaurante.nombre_fantasia_restaurante}</Card.Title>
-            <br />
-            <Card.Text>{restaurante.tipo_restaurante}</Card.Text>
-            <br />
-          </div>
-          <div className="datosDelRestaurante">
-            <div>
-              <FontAwesomeIcon icon={faClock} />
-              <label className="marginLeft8">30Min</label>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faStar} />
-              <label className="marginLeft8">
-                {restaurante.clasificacion_restaurante}
-              </label>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faRoute} />
-              <label className="marginLeft8">
-                {restaurante.direccion_restaurante}
-              </label>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-      <br />
-      <h1 className="datosDelRestaurante">Productos</h1>
-      {productoRestaurante.map((producto) => {
-        return (
-          <>
-            <br />
-            <Card>
-              <Card.Img variant="top" src={producto.imagen_producto} />
-              <Card.Body>
-                <Card.Title>{producto.nombre_producto}</Card.Title>
-                <Card.Text>{producto.descripcion_producto}</Card.Text>
-                <Card.Text>${producto.precio_venta_producto}</Card.Text>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    addCarrito(producto);
-                  }}
-                >
-                  Agregar al carrito
-                </Button>
-              </Card.Body>
-            </Card>
-          </>
-        );
-      })}
     </>
   );
 };
