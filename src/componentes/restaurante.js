@@ -12,6 +12,7 @@ const RestauranteComponent = () => {
 
   const [restaurante, setRestaurante] = useState([]);
   useEffect(() => {
+    sessionStorage.setItem("pedidos", JSON.stringify(JSON.stringify([])));
     axios
       .get(restURL)
       .then((response) => {
@@ -39,21 +40,25 @@ const RestauranteComponent = () => {
 
 
 
-  const addCarrito = (id, precio) => {
+  const addCarrito = (producto) => {
     let getSessionStoragePedidos = JSON.parse(
       JSON.parse(sessionStorage.getItem("pedidos"))
     );
 
     console.log("ANTES: ", getSessionStoragePedidos);
-    
+
     getSessionStoragePedidos.push({
-      id: id,
+      id: producto.id,
       cantidad: 1,
-      precio: precio,
+      precio_venta_producto: producto.precio_venta_producto,
+      imagen_producto: producto.imagen_producto,
+      nombre_producto: producto.nombre_producto,
+      descripcion_producto: producto.descripcion_producto,
+
     });
 
     console.log("DESPUES: ", getSessionStoragePedidos);
-    
+
     sessionStorage.setItem(
       "pedidos",
       JSON.stringify(JSON.stringify(getSessionStoragePedidos))
@@ -109,7 +114,7 @@ const RestauranteComponent = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    addCarrito(producto.id, producto.precio_venta_producto);
+                    addCarrito(producto);
                   }}
                 >
                   Agregar al carrito
