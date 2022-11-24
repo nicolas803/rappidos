@@ -1,5 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
+import React, { useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoneyBill1Wave,
@@ -7,16 +9,60 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function ModalPagos(props) {
-    const productosCarrito = JSON.parse(
-        JSON.parse(sessionStorage.getItem("pedidos"))
-      );
-    const pagar = () => {
-        console.log("Lista de productos para el post: ", productosCarrito);
-        //En productosCarrito esta la lista de productos
-        window.location.href ="/seguimientoPedido";
-        props.onHide()
+  const productosCarrito = JSON.parse(
+    JSON.parse(sessionStorage.getItem("pedidos"))
+  );
+  async function postPedido() {
+    let infoPedido = {
+      "estado": "OK",
+      'restaurante': 1,
+      'cliente': 1,
+      'delivery': 1
     }
 
+    let data
+    let res = await axios.post('http://localhost:8000/api/pedido/', infoPedido).then((response) => {
+      console.log(response);
+      data = response
+    })
+      .catch((error) => {
+        console.log(error);
+        data = error
+      });
+    console.log(data);
+  };
+
+  async function postProdu() {
+    let data
+    console.log("LOG PRODUCtos", productosCarrito);
+    productosCarrito.map(async (productoDelCarrito) => {
+      console.log("carro", productoDelCarrito)
+      let resProd = await axios.post('http://localhost:8000/api/detalle_Pedido/', productoDelCarrito).then((response) => {
+        console.log(response);
+        data = response
+      })
+        .catch((error) => {
+          console.log(error);
+          data = error
+        });
+      console.log(data);
+    })
+  };
+  const pagar = () => {
+
+
+    postPedido();
+    postProdu();
+    console.log("pagar")
+    console.log("Lista de productos para el post: ", productosCarrito);
+
+
+    //En productosCarrito esta la lista de productos
+    //window.location.href = "/seguimientoPedido";
+    props.onHide()
+
+
+  }
   return (
     <Modal
       {...props}
@@ -30,7 +76,7 @@ function ModalPagos(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Button onClick={pagar}>
+        <Button onClick={pagar} method="POST">
           <FontAwesomeIcon icon={faMoneyBill1Wave} /> Efectivo
         </Button>
         <br />

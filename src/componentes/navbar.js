@@ -9,10 +9,10 @@ import RappiDosImage from '../assets/image/rappidosLogo.png'
 
 const NavbarComponent = () => {
   return (
-    <Navbar variant="dark" expand="lg">
-      <Container className="displayNavbar">
+    <Navbar bg="white" variant="dark" expand="lg" fixed="top">
+      <Container fluid>
         <Navbar.Brand href="/">
-          <img src={RappiDosImage} height={70} alt="Logo"/>
+          <img src={RappiDosImage} height={70} alt="Logo" />
         </Navbar.Brand>
         <Nav.Link href="/carrito"><FontAwesomeIcon icon={faCartShopping} /></Nav.Link>
       </Container>
