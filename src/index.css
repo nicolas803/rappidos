@@ -22,3 +22,8 @@ code {
 .marginLeft8 {
   margin-left: 8px;
 }
+
+.displayNavbar{
+  display: flex !important;
+  justify-content: space-around !important;
+}
