@@ -20,20 +20,45 @@ function ModalPagos(props) {
       'delivery': 1
     }
 
-    let res = await axios.post('http://localhost:8000/api/pedido/', infoPedido);
-    let data = res.data;
-    console.log('post');
-  }
+    let data
+    let res = await axios.post('http://localhost:8000/api/pedido/', infoPedido).then((response) => {
+      console.log(response);
+      data = response
+    })
+      .catch((error) => {
+        console.log(error);
+        data = error
+      });
+    console.log(data);
+  };
+
+  async function postProdu() {
+    let data
+    console.log("LOG PRODUCtos", productosCarrito);
+    productosCarrito.map(async (productoDelCarrito) => {
+      console.log("carro", productoDelCarrito)
+      let resProd = await axios.post('http://localhost:8000/api/detalle_Pedido/', productoDelCarrito).then((response) => {
+        console.log(response);
+        data = response
+      })
+        .catch((error) => {
+          console.log(error);
+          data = error
+        });
+      console.log(data);
+    })
+  };
   const pagar = () => {
 
 
     postPedido();
+    postProdu();
     console.log("pagar")
     console.log("Lista de productos para el post: ", productosCarrito);
 
 
     //En productosCarrito esta la lista de productos
-    window.location.href = "/seguimientoPedido";
+    //window.location.href = "/seguimientoPedido";
     props.onHide()
 
 
