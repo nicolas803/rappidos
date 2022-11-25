@@ -27,3 +27,9 @@ code {
   display: flex !important;
   justify-content: space-around !important;
 }
+
+.cardPedidosRestaurante{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
