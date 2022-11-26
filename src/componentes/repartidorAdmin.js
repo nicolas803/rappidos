@@ -12,9 +12,6 @@ import axios from "axios";
 import { type } from "@testing-library/user-event/dist/type";
 import ModalDetallesPedidoRepartidor from "./modalDetallesPedidoRepartidor";
 
-const restURL = "http://localhost:8000/api/restaurante/1/";
-const ProducURL = "http://localhost:8000/api/producto/?restaurante__id=1";
-
 const RepartidorAdminComponent = () => {
   const [modalShow, setModalShow] = useState(false);
   const [pedidoModal, setPedidoModal] = useState(0);
@@ -27,18 +24,45 @@ const RepartidorAdminComponent = () => {
     "enEspera",
   ];
 
+  const cambiarEstado = (idPedido, nuevoEstado) => {
+    console.log("Nuevo estado: ", nuevoEstado)
+    console.log("idPedido cambio de estado: ", idPedido)
+    const options = {
+      method: 'PATCH',
+      url: `http://localhost:8000/api/pedido/${idPedido}/`,
+      data: {
+        "id": idPedido, "estado": nuevoEstado
+      }
+    };
+
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+    window.location.reload();
+  }
   const estadosRepartidor = ["cancelado", "enCamino", "pagado", "entregado"];
 
   const [productos, setProductos] = useState([]);
   const [pedidos, setPedidos] = useState([]);
   const [datosRepartidor, setDatosRepartidor] = useState([]);
+  const [datosEntregas, setDatosEntregas] = useState([]);
 
-  const optionsPedidosRestaurante = {
+  // trae los pedidos terminados
+  const optionsDatosEntregas = {
     method: 'GET',
-    url: 'http://localhost:8000/api/pedido_restaurant/',
-    params: { restaurante_id: '1' }
+    url: 'http://localhost:8000/api/pedido/',
+    params: { estado: 'entregado', delivery__id: '1' }
   };
 
+  //pedidos disponobles
+  const optionsPedidosRestaurante = {
+    method: 'GET',
+    url: 'http://localhost:8000/api/pedido_delivery/',
+
+  };
+  // info repartidor
   const optionsDatosRepartidor = { method: 'GET', url: 'http://localhost:8000/api/delivery/1/' };
 
   useEffect(() => {
@@ -49,6 +73,8 @@ const RepartidorAdminComponent = () => {
       }).catch(function (error) {
         console.error(error);
       });
+    }
+    const getDatosRepartidor = async () => {
       axios.request(optionsDatosRepartidor).then(function (response) {
         console.log(response.data);
         setDatosRepartidor(response.data);
@@ -56,20 +82,33 @@ const RepartidorAdminComponent = () => {
         console.error(error);
       });
     }
-  }, []);
+    const getDatosEntrega = async () => {
+      await axios.request(optionsDatosEntregas).then(function (response) {
+        console.log("response info", response.data);
+        setDatosEntregas(response.data);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }
+    getPedidos();
+    getDatosRepartidor();
+    getDatosEntrega();
 
+  }
+    , []);
 
-  const validaBoton = (estado, tipoPago) => {
+  console.log(datosEntregas);
+  const validaBoton = (idPedido, estado, tipoPago) => {
     if (estado === "enEspera") {
-      return <Button variant="primary">Comenzar</Button>;
+      return <Button onClick={() => { cambiarEstado(idPedido, "enCamino") }} variant="primary">Comenzar</Button>;
     } else if (estado === "enCamino") {
       if (tipoPago !== "efectivo") {
         return <Button variant="primary">Pagado</Button>;
       } else {
-        return <Button variant="primary">Entregar</Button>;
+        return <Button onClick={() => { cambiarEstado(idPedido, "entregado") }} variant="primary">Entregar</Button>;
       }
     } else {
-      return <Button variant="primary">Entregar</Button>;
+      return <Button variant="primary">entregado</Button>;
     }
   };
 
@@ -82,14 +121,14 @@ const RepartidorAdminComponent = () => {
             <br />
             <br />
             <br />
-            {/* <Card.Title>Bienvenido {datosRepartidor.nombre}</Card.Title> */}
+            <Card.Title>Bienvenido {datosRepartidor.nombre_delivery} {datosRepartidor.apellidos_delivery}</Card.Title>
             <br />
             <Card.Text className="marginLeft8">
               <FontAwesomeIcon icon={faCheck} />
-              Pedidos completados: 1
+              Pedidos completados: {datosEntregas.length}
               <br />
               <FontAwesomeIcon icon={faTruck} />
-              {/* Pedidos disponibles: {pedidos.length} */}
+              Pedidos disponibles: {pedidos.length}
             </Card.Text>
             <br />
           </div>
@@ -114,12 +153,11 @@ const RepartidorAdminComponent = () => {
           <>
             <br />
             <Card className="cardPedidosRestaurante">
-              {/* <img src={pedido.imagen_producto} /> */}gay
               <Card.Body>
                 <Card.Title onClick={() => { setModalShow(true); setPedidoModal(index) }}>
-                  {pedido.nombre_producto}
+                  Pedido N° {pedido.id} &nbsp;
+                  {validaBoton(pedido.id, pedido.estado, "efectivo")}
                 </Card.Title>
-                {validaBoton(pedido.estado)}
               </Card.Body>
             </Card>
           </>
