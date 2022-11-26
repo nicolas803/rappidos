@@ -10,6 +10,9 @@ import {
 
 
 function ModalPagos(props) {
+
+  const [show, setShow] = useState(false);
+
   let total = 0;
   let costo = 3000;
   // hace json del carrito
@@ -64,21 +67,28 @@ function ModalPagos(props) {
   }
 
   // pagar llama a las dos func que hacen post
-  const pagar = async () => {
+  const pagar = () => {
 
     //En productosCarrito esta la lista de productos
-    await pedido();
+    pedido();
     console.log("p carrito", productosCarrito)
+
+  }
+
+  // props.onHide()
+  // window.location.href = "/seguimientoPedido"
+
+
+  const funcionPostPago = () => {
+    //agregar codigo gay
     for (let x of productosCarrito) {
       // console.log("id pedidossss", post.id);
       // console.log("id prod", x.id);
-      setTimeout(await detallePedido(post.id, x.id), 3500);
-    }
-
-    // props.onHide()
-    // window.location.href = "/seguimientoPedido"
-
-
+      detallePedido(post.id, x.id);
+      //
+      setShow(false);
+      props.onHide();
+    };
   }
   return (
     <Modal
@@ -87,42 +97,45 @@ function ModalPagos(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Total a pagar
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <pre> Total productos $ {total} </pre>
-        <pre> Costo de envio  $ {costo}</pre>
-        <pre> Total general   $ {total + costo}
-        </pre>
-
-      </Modal.Body>
-      <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Metodo de pago
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Button onClick={pagar} method="POST">
-          <FontAwesomeIcon icon={faMoneyBill1Wave} /> Efectivo
-        </Button>
-        <br />
-        <br />
-        <Button disabled>
-          <FontAwesomeIcon icon={faCreditCard} /> WebPay
-        </Button>
-        <p>El metodo de pago WebPay estará disponible proximamente. </p>
-        <p>Por ahora prefiera el uso de efectivo.</p>
-        <p>Muchas gracias.</p>
-      </Modal.Body>
+      {!show ? (
+        <>
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Metodo de pago
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Button onClick={pagar} method="POST">
+              <FontAwesomeIcon icon={faMoneyBill1Wave} /> Efectivo
+            </Button>
+            <br />
+            <br />
+            <Button disabled>
+              <FontAwesomeIcon icon={faCreditCard} /> WebPay
+            </Button>
+            <p>El metodo de pago WebPay estará disponible proximamente. </p>
+            <p>Por ahora prefiera el uso de efectivo.</p>
+            <p>Muchas gracias.</p>
+          </Modal.Body>
+        </>
+      ) : (
+        <>
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">Pagado</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Se págo se ha realizado correctamente.</p>
+          </Modal.Body>
+        </>
+      )}
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        {show ? (
+          <Button onClick={funcionPostPago}>Revisar estado</Button>
+        ) : (
+          <Button onClick={props.onHide}>Close</Button>
+        )}
       </Modal.Footer>
-    </Modal >
+    </Modal>
   );
 }
-
 export default ModalPagos;
