@@ -93,6 +93,8 @@ function ModalPagos(props) {
       //
       setShowPostPago(false);
       props.onHide();
+      window.location.href = "/seguimientoPedido"
+
     }
   };
   return (
