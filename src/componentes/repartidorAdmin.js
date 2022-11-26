@@ -14,8 +14,7 @@ import ModalDetallesPedidoRepartidor from "./modalDetallesPedidoRepartidor";
 
 const RepartidorAdminComponent = () => {
   const [modalShow, setModalShow] = useState(false);
-  const [pedidoModal, setPedidoModal] = useState(0);
-
+  const [pedidoModal, setPedidoModal] = useState({});
 
   const estadosRestaurante = [
     "cancelado",
@@ -25,23 +24,27 @@ const RepartidorAdminComponent = () => {
   ];
 
   const cambiarEstado = (idPedido, nuevoEstado) => {
-    console.log("Nuevo estado: ", nuevoEstado)
-    console.log("idPedido cambio de estado: ", idPedido)
+    console.log("Nuevo estado: ", nuevoEstado);
+    console.log("idPedido cambio de estado: ", idPedido);
     const options = {
-      method: 'PATCH',
+      method: "PATCH",
       url: `http://localhost:8000/api/pedido/${idPedido}/`,
       data: {
-        "id": idPedido, "estado": nuevoEstado
-      }
+        id: idPedido,
+        estado: nuevoEstado,
+      },
     };
 
-    axios.request(options).then(function (response) {
-      console.log(response.data);
-    }).catch(function (error) {
-      console.error(error);
-    });
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
     window.location.reload();
-  }
+  };
   const estadosRepartidor = ["cancelado", "enCamino", "pagado", "entregado"];
 
   const [productos, setProductos] = useState([]);
@@ -51,61 +54,88 @@ const RepartidorAdminComponent = () => {
 
   // trae los pedidos terminados
   const optionsDatosEntregas = {
-    method: 'GET',
-    url: 'http://localhost:8000/api/pedido/',
-    params: { estado: 'entregado', delivery__id: '1' }
+    method: "GET",
+    url: "http://localhost:8000/api/pedido/",
+    params: { estado: "entregado", delivery__id: "1" },
   };
 
   //pedidos disponobles
   const optionsPedidosRestaurante = {
-    method: 'GET',
-    url: 'http://localhost:8000/api/pedido_delivery/',
-
+    method: "GET",
+    url: "http://localhost:8000/api/pedido_delivery/",
   };
   // info repartidor
-  const optionsDatosRepartidor = { method: 'GET', url: 'http://localhost:8000/api/delivery/1/' };
+  const optionsDatosRepartidor = {
+    method: "GET",
+    url: "http://localhost:8000/api/delivery/1/",
+  };
 
   useEffect(() => {
     const getPedidos = async () => {
-      await axios.request(optionsPedidosRestaurante).then(function (response) {
-        console.log("Pedidos: ", response.data);
-        setPedidos(response.data)
-      }).catch(function (error) {
-        console.error(error);
-      });
-    }
+      await axios
+        .request(optionsPedidosRestaurante)
+        .then(function (response) {
+          console.log("Pedidos: ", response.data);
+          setPedidos(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    };
     const getDatosRepartidor = async () => {
-      axios.request(optionsDatosRepartidor).then(function (response) {
-        console.log(response.data);
-        setDatosRepartidor(response.data);
-      }).catch(function (error) {
-        console.error(error);
-      });
-    }
+      axios
+        .request(optionsDatosRepartidor)
+        .then(function (response) {
+          console.log(response.data);
+          setDatosRepartidor(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    };
     const getDatosEntrega = async () => {
-      await axios.request(optionsDatosEntregas).then(function (response) {
-        console.log("response info", response.data);
-        setDatosEntregas(response.data);
-      }).catch(function (error) {
-        console.error(error);
-      });
-    }
+      await axios
+        .request(optionsDatosEntregas)
+        .then(function (response) {
+          console.log("response info", response.data);
+          setDatosEntregas(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    };
     getPedidos();
     getDatosRepartidor();
     getDatosEntrega();
-
-  }
-    , []);
+  }, []);
 
   console.log(datosEntregas);
   const validaBoton = (idPedido, estado, tipoPago) => {
     if (estado === "enEspera") {
-      return <Button onClick={() => { cambiarEstado(idPedido, "enCamino") }} variant="primary">Comenzar</Button>;
+      return (
+        <Button
+          onClick={() => {
+            cambiarEstado(idPedido, "enCamino");
+          }}
+          variant="primary"
+        >
+          Comenzar
+        </Button>
+      );
     } else if (estado === "enCamino") {
       if (tipoPago !== "efectivo") {
         return <Button variant="primary">Pagado</Button>;
       } else {
-        return <Button onClick={() => { cambiarEstado(idPedido, "entregado") }} variant="primary">Entregar</Button>;
+        return (
+          <Button
+            onClick={() => {
+              cambiarEstado(idPedido, "entregado");
+            }}
+            variant="primary"
+          >
+            Entregar
+          </Button>
+        );
       }
     } else {
       return <Button variant="primary">entregado</Button>;
@@ -121,7 +151,10 @@ const RepartidorAdminComponent = () => {
             <br />
             <br />
             <br />
-            <Card.Title>Bienvenido {datosRepartidor.nombre_delivery} {datosRepartidor.apellidos_delivery}</Card.Title>
+            <Card.Title>
+              Bienvenido {datosRepartidor.nombre_delivery}{" "}
+              {datosRepartidor.apellidos_delivery}
+            </Card.Title>
             <br />
             <Card.Text className="marginLeft8">
               <FontAwesomeIcon icon={faCheck} />
@@ -148,13 +181,18 @@ const RepartidorAdminComponent = () => {
       </Card>
       <br />
       <h1 className="datosDelRestaurante">Pedidos</h1>
-      {pedidos.map((pedido, index) => {
+      {pedidos.map((pedido) => {
         return (
           <>
             <br />
             <Card className="cardPedidosRestaurante">
               <Card.Body>
-                <Card.Title onClick={() => { setModalShow(true); setPedidoModal(index) }}>
+                <Card.Title
+                  onClick={() => {
+                    setPedidoModal(pedido);
+                    setModalShow(true);
+                  }}
+                >
                   Pedido N° {pedido.id} &nbsp;
                   {validaBoton(pedido.id, pedido.estado, "efectivo")}
                 </Card.Title>
@@ -168,13 +206,11 @@ const RepartidorAdminComponent = () => {
           show={modalShow}
           onHide={() => setModalShow(false)}
           productos={productos}
-          pedido={pedidos[pedidoModal]}
+          idPedido={pedidoModal}
         />
       ) : (
         <></>
-      )
-
-      }
+      )}
     </>
   );
 };

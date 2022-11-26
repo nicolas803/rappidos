@@ -10,60 +10,26 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function ModalDetallesPedidoRepartidor(props) {
-  /* const productosCarrito = JSON.parse(
-    JSON.parse(sessionStorage.getItem("pedidos"))
-  );
-  async function postPedido() {
-    let infoPedido = {
-      "estado": "OK",
-      'restaurante': 1,
-      'cliente': 1,
-      'delivery': 1
-    }
-
-    let data
-    let res = await axios.post('http://localhost:8000/api/pedido/', infoPedido).then((response) => {
-      console.log(response);
-      data = response
-    })
-      .catch((error) => {
-        console.log(error);
-        data = error
-      });
-    console.log(data);
+  console.log("props: ", props);
+  const [productos, setProductos] = useState([]);
+  
+  const optionsProductos = {
+    method: "GET",
+    url: `http://localhost:8000/api/detalle_Pedido/?pedido__id=${props.idPedido.id}`,
   };
 
-  async function postProdu() {
-    let data
-    console.log("LOG PRODUCtos", productosCarrito);
-    productosCarrito.map(async (productoDelCarrito) => {
-      console.log("carro", productoDelCarrito)
-      let resProd = await axios.post('http://localhost:8000/api/detalle_Pedido/', productoDelCarrito).then((response) => {
-        console.log(response);
-        data = response
+  useEffect(() => {
+    axios
+      .request(optionsProductos)
+      .then(function (response) {
+        setProductos(response.data);
+        console.log("data: ", productos);
       })
-        .catch((error) => {
-          console.log(error);
-          data = error
-        });
-      console.log(data);
-    })
-  };
-  const pagar = () => {
+      .catch(function (error) {
+        console.error(error);
+      });
+  },[]);
 
-
-    postPedido();
-    postProdu();
-    console.log("pagar")
-    console.log("Lista de productos para el post: ", productosCarrito);
-
-
-    //En productosCarrito esta la lista de productos
-    //window.location.href = "/seguimientoPedido";
-    props.onHide()
-
-
-  } */
   return (
     <Modal
       {...props}
@@ -75,19 +41,19 @@ function ModalDetallesPedidoRepartidor(props) {
         <Modal.Title id="contained-modal-title-vcenter">Pedido</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {props.productos.map((producto) => {
+        {productos.map((producto) => {
           return (
             <Card.Body>
               <Card.Title>{producto.nombre_producto}</Card.Title>
               <Card.Text>{producto.descripcion_producto}</Card.Text>
-              <Card.Text>${producto.precio_venta_producto}</Card.Text>
+              <Card.Text>${producto.precio_venta}</Card.Text>
             </Card.Body>
           );
         })}
         <br />
         <br />
-        <Card.Text><b>Restaurante: </b>{props.pedido.dierccionRestaurante}</Card.Text>
-        <Card.Text><b>Cliente: </b>{props.pedido.dierccionCliente}</Card.Text>
+        <Card.Text><b>Restaurante: </b>{props.idPedido.direccion_restaurante}</Card.Text>
+        <Card.Text><b>Cliente: </b>Antonio Varas 666</Card.Text>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>

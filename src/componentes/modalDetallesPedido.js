@@ -23,7 +23,7 @@ function ModalDetallesPedido(props) {
       .catch(function (error) {
         console.error(error);
       });
-  });
+  },[]);
 
   return (
     <Modal
