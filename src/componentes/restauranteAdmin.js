@@ -40,7 +40,7 @@ const RestauranteAdminComponent = () => {
     }).catch(function (error) {
       console.error(error);
     });
-
+    window.location.reload();
   }
 
   useEffect(() => {
@@ -137,13 +137,13 @@ const RestauranteAdminComponent = () => {
 
   const validaBotonDer = (estado, idPedido) => {
     if (estado === "porConfirmar") {
-      return <Button onClick={() => { cambiarEstado(idPedido, "enPreparacion") }} variant="primary">Por Confirmar</Button>;
+      return <Button onClick={() => { cambiarEstado(idPedido, "enPreparacion") }} variant="primary">Por confirmar</Button>;
     } else if (estado === "enPreparacion") {
-      return <Button onClick={() => { cambiarEstado(idPedido, "enEspera") }} variant="warning">Listo para retiro</Button>;
+      return <Button onClick={() => { cambiarEstado(idPedido, "enEspera") }} variant="warning">En preparación</Button>;
     } else {
       return (
         <Button variant="success" disabled>
-          {estado}
+          Listo para retiro
         </Button>
       );
     }
