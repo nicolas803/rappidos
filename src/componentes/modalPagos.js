@@ -77,27 +77,30 @@ function ModalPagos(props) {
   }
 
   // pagar llama a las dos func que hacen post
-  const pagar = async () => {
+  const pagar = () => {
     //En productosCarrito esta la lista de productos
-    await pedido();
+    pedido();
     console.log("p carrito", productosCarrito);
+  };
+
+  // props.onHide()
+  // window.location.href = "/seguimientoPedido"
+
+  setShow(true);
+}
+const funcionPostPago = () => {
+  //agregar codigo gay
+
+  const funcionPostPago = () => {
+    //agregar codigo gay
     for (let x of productosCarrito) {
       // console.log("id pedidossss", post.id);
       // console.log("id prod", x.id);
-      setTimeout(await detallePedido(post.id, x.id), 3500);
+      detallePedido(post.id, x.id);
+      //
+      setShow(false);
+      props.onHide();
     }
-
-    // props.onHide()
-    // window.location.href = "/seguimientoPedido"
-
-    setShow(true);
-  };
-  const funcionPostPago = () => {
-    //agregar codigo gay
-
-    //
-    setShow(false);
-    props.onHide();
   };
   return (
     <Modal
@@ -109,16 +112,6 @@ function ModalPagos(props) {
       {!show ? (
         <>
           <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Total a pagar
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <pre> Total productos $ {total} </pre>
-            <pre> Costo de envio $ {costo}</pre>
-            <pre> Total general $ {total + costo}</pre>
-          </Modal.Body>
-          <Modal.Header>
             <Modal.Title id="contained-modal-title-vcenter">
               Metodo de pago
             </Modal.Title>
@@ -156,6 +149,5 @@ function ModalPagos(props) {
       </Modal.Footer>
     </Modal>
   );
-}
-
+};
 export default ModalPagos;
