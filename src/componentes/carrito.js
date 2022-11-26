@@ -4,8 +4,7 @@ import Button from "react-bootstrap/Button";
 import ModalPagos from "./modalPagos";
 import axios from "axios";
 
-
-const ProducURL = "http://localhost:8000/api/producto/?restaurante__id=1"
+const ProducURL = "http://localhost:8000/api/producto/?restaurante__id=1";
 const CarritoComponent = () => {
   const [modalShow, setModalShow] = useState(false);
 
@@ -45,16 +44,11 @@ const CarritoComponent = () => {
           return (
             <>
               <Card>
-                <Card.Img
-                  variant="top"
-                  src={producto.imagen_producto}
-                />
+                <Card.Img variant="top" src={producto.imagen_producto} />
                 <Card.Body>
                   <Card.Title>{producto.nombre_producto}</Card.Title>
                   <Card.Text>{producto.descripcion_producto}</Card.Text>
-                  <Card.Text>
-                    ${producto.precio_venta_producto}
-                  </Card.Text>
+                  <Card.Text>${producto.precio_venta_producto}</Card.Text>
                 </Card.Body>
               </Card>
               <br />
@@ -68,7 +62,13 @@ const CarritoComponent = () => {
           </Button>
         </div>
         <br />
-        <ModalPagos show={modalShow} onHide={() => setModalShow(false)} />
+        {modalShow?(
+          <ModalPagos show={modalShow} onHide={() => setModalShow(false)} />
+        ):(
+          <></>
+        )
+          
+        }
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoneyBill1Wave,
@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function ModalPagos(props) {
-  const [show, setShow] = useState(false);
+  const [showPostPago, setShowPostPago] = useState(false);
 
   let total = 0;
   let costo = 3000;
@@ -37,7 +37,7 @@ function ModalPagos(props) {
     monto_envio: 0,
     monto_total_pedido: 0,
   });
-  async function pedido() {
+  const pedido = async () => {
     axios
       .post("http://localhost:8000/api/pedido/", {
         estado: "mmvo",
@@ -52,11 +52,11 @@ function ModalPagos(props) {
         setPost(response.data);
       })
       .catch((e) => console.log("error", e));
-  }
+  };
 
   sessionStorage.setItem("idPedido", JSON.stringify(post.id));
   // async function para det pedido
-  async function detallePedido(id, producto) {
+  const detallePedido = async (id, producto) => {
     const detallePedidos = {
       method: "POST",
       url: "http://localhost:8000/api/detalle_Pedido/",
@@ -74,22 +74,15 @@ function ModalPagos(props) {
       .catch(function (error) {
         console.error(error);
       });
-  }
+  };
 
   // pagar llama a las dos func que hacen post
   const pagar = () => {
     //En productosCarrito esta la lista de productos
     pedido();
     console.log("p carrito", productosCarrito);
+    setShowPostPago(true);
   };
-
-  // props.onHide()
-  // window.location.href = "/seguimientoPedido"
-
-  setShow(true);
-}
-const funcionPostPago = () => {
-  //agregar codigo gay
 
   const funcionPostPago = () => {
     //agregar codigo gay
@@ -98,7 +91,7 @@ const funcionPostPago = () => {
       // console.log("id prod", x.id);
       detallePedido(post.id, x.id);
       //
-      setShow(false);
+      setShowPostPago(false);
       props.onHide();
     }
   };
@@ -109,7 +102,7 @@ const funcionPostPago = () => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      {!show ? (
+      {!showPostPago ? (
         <>
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
@@ -141,7 +134,7 @@ const funcionPostPago = () => {
         </>
       )}
       <Modal.Footer>
-        {show ? (
+        {showPostPago ? (
           <Button onClick={funcionPostPago}>Revisar estado</Button>
         ) : (
           <Button onClick={props.onHide}>Close</Button>
@@ -149,5 +142,5 @@ const funcionPostPago = () => {
       </Modal.Footer>
     </Modal>
   );
-};
+}
 export default ModalPagos;
