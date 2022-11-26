@@ -19,11 +19,6 @@ const RepartidorAdminComponent = () => {
   const [modalShow, setModalShow] = useState(false);
   const [pedidoModal, setPedidoModal] = useState(0);
 
-  const datosRepartidor = {
-    nombre: "Kleiber Yonaiker",
-    numeroPedidosCompletados: 69,
-    facturado: 420000,
-  };
 
   const estadosRestaurante = [
     "cancelado",
@@ -34,66 +29,35 @@ const RepartidorAdminComponent = () => {
 
   const estadosRepartidor = ["cancelado", "enCamino", "pagado", "entregado"];
 
-  const productos = [
-    {
-      id: "1",
-      nombre_producto: "Pinga Fresca",
-      descripcion_producto: "Una pinga fresca para compartir",
-      precio_venta_producto: 9990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-    {
-      id: "2",
-      nombre_producto: "Pinga Caliente",
-      descripcion_producto: "Una pinga caliente como le gusta a Dido",
-      precio_venta_producto: 4990,
-      imagen_producto: "https://www.fillmurray.com/286/180",
-    },
-    {
-      id: "3",
-      nombre_producto: "Pinga Frita",
-      descripcion_producto: "Pinga frita para la cochina de Nando8",
-      precio_venta_producto: 990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-  ];
+  const [productos, setProductos] = useState([]);
+  const [pedidos, setPedidos] = useState([]);
+  const [datosRepartidor, setDatosRepartidor] = useState([]);
 
-  const pedidos = [
-    {
-      id: "1",
-      imagen_producto: "https://www.fillmurray.com/70/70",
-      nombre_producto: "Nombre producto o direccion",
-      dierccionRestaurante: "Antonio Varas 666",
-      dierccionCliente: "Leonor Cepeda 952",
-      estado: "pagado",
-      tipoPago: "efectivo",
-    },
-    {
-      id: "2",
-      imagen_producto: "https://www.fillmurray.com/70/70",
-      nombre_producto: "Otro verga",
-      dierccionRestaurante: "Antonio Varas 666",
-      dierccionCliente: "Francisco Bilbao 4260",
-      estado: "enCamino",
-      tipoPago: "webpay",
-    },
-    {
-      id: "2",
-      imagen_producto: "https://www.fillmurray.com/70/70",
-      nombre_producto: "Otro verga",
-      dierccionRestaurante: "Antonio Varas 666",
-      dierccionCliente: "Los Cancilleres 1670",
-      estado: "enCamino",
-      tipoPago: "efectivo",
-    },
-    {
-      id: "3",
-      imagen_producto: "https://www.fillmurray.com/70/70",
-      nombre_producto: "Otra mas",
-      estado: "enEspera",
-      tipoPago: "efectivo",
-    },
-  ];
+  const optionsPedidosRestaurante = {
+    method: 'GET',
+    url: 'http://localhost:8000/api/pedido_restaurant/',
+    params: { restaurante_id: '1' }
+  };
+
+  const optionsDatosRepartidor = { method: 'GET', url: 'http://localhost:8000/api/delivery/1/' };
+
+  useEffect(() => {
+    const getPedidos = async () => {
+      await axios.request(optionsPedidosRestaurante).then(function (response) {
+        console.log("Pedidos: ", response.data);
+        setPedidos(response.data)
+      }).catch(function (error) {
+        console.error(error);
+      });
+      axios.request(optionsDatosRepartidor).then(function (response) {
+        console.log(response.data);
+        setDatosRepartidor(response.data);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }
+  }, []);
+
 
   const validaBoton = (estado, tipoPago) => {
     if (estado === "enEspera") {
@@ -118,14 +82,14 @@ const RepartidorAdminComponent = () => {
             <br />
             <br />
             <br />
-            <Card.Title>Bienvenido {datosRepartidor.nombre}</Card.Title>
+            {/* <Card.Title>Bienvenido {datosRepartidor.nombre}</Card.Title> */}
             <br />
             <Card.Text className="marginLeft8">
               <FontAwesomeIcon icon={faCheck} />
-              Pedidos completados: {datosRepartidor.numeroPedidosCompletados}
+              Pedidos completados: 1
               <br />
               <FontAwesomeIcon icon={faTruck} />
-              Pedidos disponibles: {pedidos.length}
+              {/* Pedidos disponibles: {pedidos.length} */}
             </Card.Text>
             <br />
           </div>
@@ -137,7 +101,7 @@ const RepartidorAdminComponent = () => {
             <div>
               <FontAwesomeIcon icon={faMoneyBill1Wave} />
               <label className="marginLeft8">
-                Facturado: CLP ${datosRepartidor.facturado}
+                {/* Facturado: CLP ${datosRepartidor.facturado} */}
               </label>
             </div>
           </div>
@@ -150,9 +114,9 @@ const RepartidorAdminComponent = () => {
           <>
             <br />
             <Card className="cardPedidosRestaurante">
-              <img src={pedido.imagen_producto} />
+              {/* <img src={pedido.imagen_producto} /> */}gay
               <Card.Body>
-                <Card.Title onClick={() => {setModalShow(true); setPedidoModal(index)}}>
+                <Card.Title onClick={() => { setModalShow(true); setPedidoModal(index) }}>
                   {pedido.nombre_producto}
                 </Card.Title>
                 {validaBoton(pedido.estado)}
@@ -161,12 +125,18 @@ const RepartidorAdminComponent = () => {
           </>
         );
       })}
-      <ModalDetallesPedidoRepartidor
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        productos={productos}
-        pedido={pedidos[pedidoModal]}
-      />
+      {modalShow ? (
+        <ModalDetallesPedidoRepartidor
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          productos={productos}
+          pedido={pedidos[pedidoModal]}
+        />
+      ) : (
+        <></>
+      )
+
+      }
     </>
   );
 };

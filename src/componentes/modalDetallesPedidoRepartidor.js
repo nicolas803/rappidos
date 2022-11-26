@@ -84,8 +84,8 @@ function ModalDetallesPedidoRepartidor(props) {
             </Card.Body>
           );
         })}
-        <br/>
-        <br/>
+        <br />
+        <br />
         <Card.Text><b>Restaurante: </b>{props.pedido.dierccionRestaurante}</Card.Text>
         <Card.Text><b>Cliente: </b>{props.pedido.dierccionCliente}</Card.Text>
       </Modal.Body>

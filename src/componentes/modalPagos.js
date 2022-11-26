@@ -40,7 +40,7 @@ function ModalPagos(props) {
   const pedido = async () => {
     axios
       .post("http://localhost:8000/api/pedido/", {
-        estado: "mmvo",
+        estado: "porConfirmar",
         restaurante: 1,
         cliente: 1,
         delivery: 1,
