@@ -8,58 +8,75 @@ import {
   faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
 
+
 function ModalPagos(props) {
+  let total = 0;
+  let costo = 3000;
+  // hace json del carrito
   const productosCarrito = JSON.parse(
     JSON.parse(sessionStorage.getItem("pedidos"))
   );
-  async function postPedido() {
-    let infoPedido = {
-      "estado": "OK",
-      'restaurante': 1,
-      'cliente': 1,
-      'delivery': 1
-    }
 
-    let data
-    let res = await axios.post('http://localhost:8000/api/pedido/', infoPedido).then((response) => {
-      console.log(response);
-      data = response
-    })
-      .catch((error) => {
-        console.log(error);
-        data = error
-      });
-    console.log(data);
-  };
+  // console.log("prod carrito", productosCarrito)
 
-  async function postProdu() {
-    let data
-    console.log("LOG PRODUCtos", productosCarrito);
-    productosCarrito.map(async (productoDelCarrito) => {
-      console.log("carro", productoDelCarrito)
-      let resProd = await axios.post('http://localhost:8000/api/detalle_Pedido/', productoDelCarrito).then((response) => {
-        console.log(response);
-        data = response
-      })
-        .catch((error) => {
-          console.log(error);
-          data = error
-        });
-      console.log(data);
-    })
-  };
-  const pagar = () => {
+  // function return total pedido
+  for (let x of productosCarrito) {
+    total = total + x.precio_venta_producto;
+    // console.log(x.precio_venta_producto)
+    // console.log('total', total)
+  }
+
+  // post de pedido
+  const [post, setPost] = useState({ id: 0, estado: "", restaurante: 0, cliente: 0, delivery: 0, monto_envio: 0, monto_total_pedido: 0 });
+  async function pedido() {
+    axios.post('http://localhost:8000/api/pedido/', {
+      estado: 'mmvo',
+      restaurante: 1,
+      cliente: 1,
+      delivery: 1,
+      monto_envio: costo,
+      monto_total_pedido: total + costo
+    }).then((response) => {
+      console.log(response.data)
+      setPost(response.data);
+    }).catch((e) => console.log('error', e));
+  }
+
+  sessionStorage.setItem("idPedido", JSON.stringify(post.id));
+  // async function para det pedido
+  async function detallePedido(id, producto) {
 
 
-    postPedido();
-    postProdu();
-    console.log("pagar")
-    console.log("Lista de productos para el post: ", productosCarrito);
+    const detallePedidos = {
+      method: 'POST',
+      url: 'http://localhost:8000/api/detalle_Pedido/',
+      data: {
+        "pedido": id,
+        "producto": producto
+      }
+    };
 
+    axios.request(detallePedidos).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
+
+  // pagar llama a las dos func que hacen post
+  const pagar = async () => {
 
     //En productosCarrito esta la lista de productos
-    //window.location.href = "/seguimientoPedido";
-    props.onHide()
+    await pedido();
+    console.log("p carrito", productosCarrito)
+    for (let x of productosCarrito) {
+      // console.log("id pedidossss", post.id);
+      // console.log("id prod", x.id);
+      setTimeout(await detallePedido(post.id, x.id), 3500);
+    }
+
+    // props.onHide()
+    // window.location.href = "/seguimientoPedido"
 
 
   }
@@ -70,7 +87,20 @@ function ModalPagos(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
+
       <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Total a pagar
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <pre> Total productos $ {total} </pre>
+        <pre> Costo de envio  $ {costo}</pre>
+        <pre> Total general   $ {total + costo}
+        </pre>
+
+      </Modal.Body>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           Metodo de pago
         </Modal.Title>
@@ -91,7 +121,7 @@ function ModalPagos(props) {
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
-    </Modal>
+    </Modal >
   );
 }
 

@@ -22,45 +22,38 @@ const RestauranteAdminComponent = () => {
 
   const estadosRepartidor = ["cancelado", "enCamino", "pagado", "entregado"];
 
-  const productos = [
-    {
-      id: "1",
-      nombre_producto: "Pinga Fresca",
-      descripcion_producto: "Una pinga fresca para compartir",
-      precio_venta_producto: 9990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-    {
-      id: "2",
-      nombre_producto: "Pinga Caliente",
-      descripcion_producto: "Una pinga caliente como le gusta a Dido",
-      precio_venta_producto: 4990,
-      imagen_producto: "https://www.fillmurray.com/286/180",
-    },
-    {
-      id: "3",
-      nombre_producto: "Pinga Frita",
-      descripcion_producto: "Pinga frita para la cochina de Nando8",
-      precio_venta_producto: 990,
-      imagen_producto: "https://www.fillmurray.com/g/286/180",
-    },
-  ]
+  const options = {
+    method: 'GET',
+    url: 'http://localhost:8000/api/producto/',
+    params: { restaurante__id: '1' }
+  };
+
+
+  const productos = useState([]);
+
+  useEffect(() => {
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }, []);
 
   const pedidos = [
     {
-      id:"1",
+      id: "1",
       imagen_producto: "https://www.fillmurray.com/70/70",
       nombre_producto: "Nombre producto o direccion",
       estado: "porConfirmar",
     },
     {
-      id:"2",
+      id: "2",
       imagen_producto: "https://www.fillmurray.com/70/70",
       nombre_producto: "Otro verga",
       estado: "enPreparacion",
     },
     {
-      id:"3",
+      id: "3",
       imagen_producto: "https://www.fillmurray.com/70/70",
       nombre_producto: "Otra mas",
       estado: "enEspera",
@@ -132,7 +125,7 @@ const RestauranteAdminComponent = () => {
           </>
         );
       })}
-      <ModalDetallesPedido show={modalShow} onHide={() => setModalShow(false)} productos={productos}/>
+      <ModalDetallesPedido show={modalShow} onHide={() => setModalShow(false)} productos={productos} />
     </>
   );
 };
