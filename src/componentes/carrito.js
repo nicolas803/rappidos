@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ModalPagos from "./modalPagos";
 import axios from "axios";
+import CardCarritoComponent from "./cardCarrito";
 
 const ProducURL = "http://localhost:8000/api/producto/?restaurante__id=1";
 const CarritoComponent = () => {
@@ -32,25 +32,14 @@ const CarritoComponent = () => {
         <h1 className="datosDelRestaurante">Productos del carrito</h1>
         <br />
         {productosCarrito.map((producto) => {
-          {
-            // console.log("log nuevo", producto);
-          }
-          // console.log("log nuevo", producto);
-
+          
           const productoEncontrado = productosRestaurante.find(
             (productoRestaurante) => productoRestaurante.id === producto.id
           );
           // console.log("Producto encontrado: ", productoEncontrado);
           return (
             <>
-              <Card>
-                <Card.Img variant="top" src={producto.imagen_producto} />
-                <Card.Body>
-                  <Card.Title>{producto.nombre_producto}</Card.Title>
-                  <Card.Text>{producto.descripcion_producto}</Card.Text>
-                  <Card.Text>${producto.precio_venta_producto}</Card.Text>
-                </Card.Body>
-              </Card>
+              <CardCarritoComponent producto={producto}/>
               <br />
             </>
           );
